@@ -4,20 +4,20 @@ A modern cryptocurrency tracking and portfolio management web application built 
 
 ## Features
 
--  Real-time cryptocurrency market data
--  Interactive price charts with multiple timeframes
--  Search and filter cryptocurrencies
--  Multiple currency support (USD, EUR, GBP, JPY, etc.)
--  Responsive design for all devices
--  Secure contact form submissions
--  Detailed market statistics and trends
+- Real-time cryptocurrency market data
+- Interactive UI with particle effects
+- Search and filter cryptocurrencies
+- Multiple currency support (USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, INR)
+- Responsive design for all devices
+- Secure contact form submissions
+- Detailed market statistics
 
 ## Tech Stack
 
 - **Frontend:**
   - Vite - Fast development server and build tool
   - JavaScript (ES6+) - Modern JavaScript features
-  - Chart.js - Interactive data visualization
+  - Particles.js - Interactive background effects
   - Modern CSS - Responsive and dynamic styling
 
 - **Backend:**
@@ -73,20 +73,28 @@ A modern cryptocurrency tracking and portfolio management web application built 
 
 ```
 CryptoVault/
-├── js/                    # JavaScript source files
-│   ├── market.js         # Market page functionality
-│   ├── services/         # API services
-│   └── utils.js          # Utility functions
-├── page/                 # HTML pages
-│   └── market.html       # Market page
-├── public/              # Static assets
-├── src/                 # Source files
-│   └── server/          # Server-side code
-├── config.json          # Configuration file
-├── index.html           # Main entry point
-├── package.json         # Project dependencies
-├── tsconfig.json        # TypeScript configuration
-└── vite.config.ts       # Vite configuration
+├── index.html              # Main entry point
+├── css/
+│   └── style.css          # Main stylesheet
+├── js/
+│   ├── market.js          # Market page functionality
+│   ├── burgermenu.js      # Mobile menu handling
+│   ├── particles-config.js # Particles.js configuration
+│   └── services/
+│       └── coinmarketcapService.js # CoinGecko API integration
+├── src/
+│   └── server/
+│       └── server.js      # Express server implementation
+├── page/
+│   ├── about.html         # About page
+│   ├── security.html      # Security features page
+│   ├── pricing.html       # Pricing plans
+│   ├── market.html        # Market data page
+│   └── contact.html       # Contact form
+├── config.json            # Configuration file
+├── package.json           # Project dependencies
+├── tsconfig.json          # TypeScript configuration
+└── vite.config.ts         # Vite configuration
 ```
 
 ## Pages
@@ -113,5 +121,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - [CoinGecko API](https://www.coingecko.com/en/api) for cryptocurrency data
-- [Chart.js](https://www.chartjs.org/) for data visualization
+- [Particles.js](https://vincentgarreau.com/particles.js/) for interactive background effects
 - [Vite](https://vitejs.dev/) for the build tool 
