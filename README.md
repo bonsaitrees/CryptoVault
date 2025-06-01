@@ -22,15 +22,7 @@ A modern cryptocurrency tracking and portfolio management web application built 
 
 - **Backend:**
   - Node.js - Server-side runtime environment
-    - Handles API requests to external services
-    - Processes form submissions
-    - Manages file operations
-    - Provides non-blocking I/O operations
   - Express.js - Web application framework
-    - Defines API endpoints
-    - Implements middleware (CORS, JSON parsing)
-    - Handles routing
-    - Manages HTTP requests/responses
   - CORS - Enables secure cross-origin requests
 
 ## Prerequisites
@@ -97,11 +89,14 @@ CryptoVault/
 └── vite.config.ts       # Vite configuration
 ```
 
-## API Endpoints
+## Pages
 
-- `POST /api/contact`: Submit contact form data
-  - Required fields: name, email, subject, message
-  - Returns: JSON response with status and message
+- **Home**: Landing page with key features and hero section
+- **About**: Project information and team details
+- **Security**: Security features and measures
+- **Pricing**: Subscription plans and pricing
+- **Market**: Real-time cryptocurrency market data
+- **Contact**: Support and contact information
 
 ## Contributing
 
