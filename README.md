@@ -42,7 +42,7 @@ A modern cryptocurrency tracking and portfolio management web application built 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/CryptoVault.git
+   git clone https://github.com/bonsaitrees/CryptoVault.git
    cd CryptoVault
    ```
 
