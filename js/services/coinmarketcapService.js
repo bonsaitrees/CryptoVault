@@ -2,7 +2,7 @@ class CryptoService {
     constructor() {
         this.baseUrl = 'https://api.coingecko.com/api/v3';
         this.selectedCurrency = 'usd';
-        this.requestDelayMs = 200; // milliseconds delay between requests
+        this.requestDelayMs = 200;
         this.supportedCurrencies = ['usd', 'eur', 'gbp', 'jpy', 'aud', 'cad', 'chf', 'cny', 'inr'];
     }
 
@@ -26,7 +26,6 @@ class CryptoService {
             }
             
             if (!response.ok) {
-                // If the currency is not supported, fall back to USD
                 if (this.selectedCurrency !== 'usd') {
                     console.warn(`Currency ${this.selectedCurrency} not supported. Falling back to USD.`);
                     this.selectedCurrency = 'usd';
@@ -76,7 +75,6 @@ class CryptoService {
             }
             
             if (!response.ok) {
-                // If the currency is not supported, fall back to USD
                 if (this.selectedCurrency !== 'usd') {
                     console.warn(`Currency ${this.selectedCurrency} not supported. Falling back to USD.`);
                     this.selectedCurrency = 'usd';
@@ -93,7 +91,6 @@ class CryptoService {
         }
     }
 
-    // Helper function to introduce a delay
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
