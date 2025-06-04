@@ -1,5 +1,4 @@
 import cryptoService from '@/services/coinmarketcapService.js';
-// import websocketService from './services/websocketService.js'; // Websocket not currently implemented
 import { formatCurrency, formatNumber } from '@/utils.js';
 import { Chart } from 'chart.js';
 
@@ -22,7 +21,7 @@ class MarketPage {
         this.currentSearch = '';
         this.currentCurrency = 'usd';
 
-        // Mapping for currency codes to symbols
+        //currency
         this.currencySymbols = {
             usd: '$',
             eur: '€',
@@ -60,27 +59,27 @@ class MarketPage {
     }
 
     async loadMarketData() {
-        this.showMainLoading(); // Show main loading indicator
+        this.showMainLoading();
         try {
             // Fetch latest listings from the service
             const result = await cryptoService.getLatestListings();
             console.log('Result from getLatestListings:', result);
             // Store all coins for filtering and sorting
             this.coins = result.data;
-            // Render the initial market data
+          
             this.renderMarketData(this.coins);
-            this.hideMainLoading(); // Hide main loading indicator on success
+            this.hideMainLoading();
         } catch (error) {
             console.error('Error in loadMarketData:', error);
-            // Show error message on failure
+            // error message on failure
             this.showError('Failed to load market data. Please try again later.');
-            this.hideMainLoading(); // Hide main loading indicator on failure
+            this.hideMainLoading();
         }
     }
 
     renderMarketData(coins) {
         console.log('Rendering market data with coins:', coins);
-        // Clear existing market list content
+        
         if (this.marketList) {
             this.marketList.innerHTML = '';
         }
@@ -88,11 +87,11 @@ class MarketPage {
         // If no coins or data is empty, show a message
         if (!coins || coins.length === 0) {
             this.showError('No cryptocurrency data available.');
-            this.coins = []; // Clear stored coins if data is empty
+            this.coins = []; 
             return;
         }
 
-        // Sort coins by market cap if that's the current sort
+        // Sort coins by market cap
         if (this.currentSort.startsWith('market_cap')) {
             console.log('Sorting by market cap:', this.currentSort);
             coins.sort((a, b) => {
@@ -102,7 +101,7 @@ class MarketPage {
             });
         }
 
-        // Render each coin as a card
+       
         coins.forEach((coin) => {
             const card = this.createCryptoCard(coin);
             if (this.marketList) {
@@ -110,7 +109,7 @@ class MarketPage {
             }
         });
 
-        // Log the rendered coins for debugging
+       
         console.log('Rendered coins:', coins.map(coin => ({
             name: coin.name,
             marketCap: coin.market_cap,
@@ -122,17 +121,17 @@ class MarketPage {
         const card = document.createElement('div');
         card.className = 'crypto-card';
         // Store coin ID on the card for detail fetching
-        card.dataset.coinId = coin.id; // Use coin.id for details endpoint
+        card.dataset.coinId = coin.id; 
         
         const priceChange = coin.price_change_percentage_24h;
-        // Determine color class based on price change
+        
         const priceChangeClass = priceChange !== undefined && priceChange >= 0 ? 'positive' : 'negative';
 
-        // Format market cap with proper number handling
+       
         const marketCap = Number(coin.market_cap) || 0;
         const formattedMarketCap = this.formatMarketCap(marketCap);
 
-        // Create the card HTML structure
+        
         card.innerHTML = `
             <div class="crypto-header">
                 <img src="${coin.image}" alt="${coin.name} Icon" class="crypto-icon">
