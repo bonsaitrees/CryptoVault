@@ -12,7 +12,7 @@ class MarketPage {
         this.modalContent = document.getElementById('modal-content');
         this.currentChart = null;
         this.currentSymbol = null;
-        this.allCoins = []; // Store all fetched coins for filtering/sorting
+        this.allCoins = [];
         this.searchInput = document.getElementById('search-input');
         this.sortSelect = document.getElementById('sort-select');
         this.currencySelect = document.getElementById('currency-select');
@@ -21,7 +21,6 @@ class MarketPage {
         this.currentSearch = '';
         this.currentCurrency = 'usd';
 
-        //currency
         this.currencySymbols = {
             usd: '$',
             eur: '€',
@@ -61,17 +60,14 @@ class MarketPage {
     async loadMarketData() {
         this.showMainLoading();
         try {
-            // Fetch latest listings from the service
             const result = await cryptoService.getLatestListings();
             console.log('Result from getLatestListings:', result);
-            // Store all coins for filtering and sorting
             this.coins = result.data;
           
             this.renderMarketData(this.coins);
             this.hideMainLoading();
         } catch (error) {
             console.error('Error in loadMarketData:', error);
-            // error message on failure
             this.showError('Failed to load market data. Please try again later.');
             this.hideMainLoading();
         }
@@ -84,14 +80,12 @@ class MarketPage {
             this.marketList.innerHTML = '';
         }
 
-        // If no coins or data is empty, show a message
         if (!coins || coins.length === 0) {
             this.showError('No cryptocurrency data available.');
             this.coins = []; 
             return;
         }
 
-        // Sort coins by market cap
         if (this.currentSort.startsWith('market_cap')) {
             console.log('Sorting by market cap:', this.currentSort);
             coins.sort((a, b) => {
@@ -101,7 +95,6 @@ class MarketPage {
             });
         }
 
-       
         coins.forEach((coin) => {
             const card = this.createCryptoCard(coin);
             if (this.marketList) {
@@ -109,7 +102,6 @@ class MarketPage {
             }
         });
 
-       
         console.log('Rendered coins:', coins.map(coin => ({
             name: coin.name,
             marketCap: coin.market_cap,
@@ -120,17 +112,12 @@ class MarketPage {
     createCryptoCard(coin) {
         const card = document.createElement('div');
         card.className = 'crypto-card';
-        // Store coin ID on the card for detail fetching
         card.dataset.coinId = coin.id; 
         
         const priceChange = coin.price_change_percentage_24h;
-        
         const priceChangeClass = priceChange !== undefined && priceChange >= 0 ? 'positive' : 'negative';
-
-       
         const marketCap = Number(coin.market_cap) || 0;
         const formattedMarketCap = this.formatMarketCap(marketCap);
-
         
         card.innerHTML = `
             <div class="crypto-header">
@@ -158,11 +145,9 @@ class MarketPage {
             <button class="view-details-btn">View Details</button>
         `;
 
-        // Add event listener to the View Details button
         const viewDetailsBtn = card.querySelector('.view-details-btn');
         if (viewDetailsBtn) {
             viewDetailsBtn.addEventListener('click', () => {
-                // Use the coin ID stored on the card
                 const coinId = card.dataset.coinId;
                 if (coinId) {
                     this.showDetails(coinId);
@@ -174,7 +159,6 @@ class MarketPage {
     }
 
     formatPrice(price) {
-        // Check if price is a valid number
         if (price === null || price === undefined || isNaN(price)) {
             const symbol = this.currencySymbols[this.currentCurrency.toLowerCase()] || this.currentCurrency.toUpperCase();
             return `${symbol} N/A`;
@@ -182,15 +166,12 @@ class MarketPage {
         const symbol = this.currencySymbols[this.currentCurrency.toLowerCase()] || this.currentCurrency.toUpperCase();
         const formattedPrice = price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 });
         if (this.currentCurrency === 'jpy') {
-            // JPY is a special case often not using decimals and symbol placement varies
             return `¥${price.toLocaleString('ja-JP', { maximumFractionDigits: 0 })}`;
         }
-        // For other currencies, place the symbol before the number
         return `${symbol}${formattedPrice}`;
     }
 
     formatMarketCap(marketCap) {
-        // Check if marketCap is a valid number
         if (marketCap === null || marketCap === undefined || isNaN(marketCap)) {
             const symbol = this.currencySymbols[this.currentCurrency.toLowerCase()] || this.currentCurrency.toUpperCase();
             return `${symbol} N/A`;
@@ -206,12 +187,10 @@ class MarketPage {
         } else {
              formattedMarketCap = marketCap.toLocaleString();
         }
-        // For most currencies, place the symbol before the number
         return `${symbol}${formattedMarketCap}`;
     }
 
     formatVolume(volume) {
-        // Check if volume is a valid number
         if (volume === null || volume === undefined || isNaN(volume)) {
             const symbol = this.currencySymbols[this.currentCurrency.toLowerCase()] || this.currentCurrency.toUpperCase();
             return `${symbol} N/A`;
@@ -227,7 +206,6 @@ class MarketPage {
         } else {
             formattedVolume = volume.toLocaleString();
         }
-         // For most currencies, place the symbol before the number
         return `${symbol}${formattedVolume}`;
     }
 
@@ -244,7 +222,6 @@ class MarketPage {
     filterAndSortCoins() {
         let filteredCoins = this.coins;
 
-        // Apply search filter
         if (this.currentSearch) {
             const searchLower = this.currentSearch.toLowerCase();
             filteredCoins = filteredCoins.filter(coin => 
@@ -253,14 +230,12 @@ class MarketPage {
             );
         }
 
-        // Apply sorting
         const [field, order] = this.currentSort.split('_');
         console.log('Sorting by:', field, order);
         
         filteredCoins.sort((a, b) => {
             let valueA, valueB;
 
-            // Handle different sorting fields
             switch (field) {
                 case 'price':
                     valueA = a.current_price;
@@ -289,15 +264,12 @@ class MarketPage {
                     valueB = b[field];
             }
 
-            // Handle string comparison for name sorting
             if (field === 'name') {
                 return order === 'asc' 
                     ? valueA.localeCompare(valueB)
                     : valueB.localeCompare(valueA);
             }
 
-            // Handle numeric comparison for other fields
-            // Convert to numbers to ensure proper comparison
             valueA = Number(valueA);
             valueB = Number(valueB);
             
@@ -310,12 +282,11 @@ class MarketPage {
     }
 
     async showGraph(coinId) {
-        this.showModalLoading(); // Show loading spinner in modal
-        if (this.graphModal) this.graphModal.style.display = 'block'; // Show the modal
+        this.showModalLoading();
+        if (this.graphModal) this.graphModal.style.display = 'block';
 
         try {
-            // Fetch historical data using coin ID
-            const historicalData = await cryptoService.getHistoricalData(coinId, 30); // Default to 30 days
+            const historicalData = await cryptoService.getHistoricalData(coinId, 30);
 
             if (!historicalData || !historicalData.data || !historicalData.data.prices || historicalData.data.prices.length === 0) {
                  this.showErrorInModal('Historical data not available for this cryptocurrency.');
@@ -323,23 +294,16 @@ class MarketPage {
             }
 
             const pricesData = historicalData.data.prices;
-
-            // Prepare data for the chart
             const labels = pricesData.map(priceData => new Date(priceData[0]).toLocaleDateString());
             const prices = pricesData.map(priceData => priceData[1]);
-
-            // Calculate price change for display
             const firstPrice = prices[0];
             const lastPrice = prices[prices.length - 1];
             const priceChange = ((lastPrice - firstPrice) / firstPrice) * 100;
             const priceChangeColor = priceChange >= 0 ? '#22c55e' : '#ef4444';
-
-            // Determine chart y-axis limits with padding
             const minPrice = Math.min(...prices);
             const maxPrice = Math.max(...prices);
             const padding = (maxPrice - minPrice) * 0.1;
 
-            // Create chart container HTML
             const chartContainer = document.createElement('div');
              chartContainer.innerHTML = `
                 <h2>${coinId.toUpperCase()} Price History</h2>
@@ -353,25 +317,21 @@ class MarketPage {
                 <canvas id="priceChart"></canvas>
             `;
 
-            // Replace modal loading with chart container
             if (this.modalContent) {
                 this.modalContent.innerHTML = '';
                 this.modalContent.appendChild(chartContainer);
             }
 
-            // Setup time filter buttons
              chartContainer.querySelectorAll('.time-filters button').forEach(button => {
                 button.addEventListener('click', (event) => {
                     const target = event.target;
                     const days = parseInt(target.dataset.days);
-                     // Update chart with new time frame
                     if (this.currentSymbol) {
                         this.updateChart(this.currentSymbol, days);
                     }
                 });
             });
 
-            // Render the chart
             this.renderChart(labels, prices, coinId, minPrice - padding, maxPrice + padding);
 
         } catch (error) {
@@ -381,12 +341,11 @@ class MarketPage {
     }
 
      async updateChart(coinId, days) {
-        this.showModalLoading(); // Show loading spinner in modal while updating
-         if (this.modalContent) this.modalContent.innerHTML = ''; // Clear current modal content
+        this.showModalLoading();
+         if (this.modalContent) this.modalContent.innerHTML = '';
 
         try {
-             // Fetch historical data for the new time frame
-            const historicalData = await cryptoService.getHistoricalData(coinId, days);
+             const historicalData = await cryptoService.getHistoricalData(coinId, days);
 
              if (!historicalData || !historicalData.data || !historicalData.data.prices || historicalData.data.prices.length === 0) {
                  this.showErrorInModal('Historical data not available for this cryptocurrency or selected time frame.');
@@ -394,23 +353,16 @@ class MarketPage {
             }
 
             const pricesData = historicalData.data.prices;
-
-             // Prepare data for the chart
             const labels = pricesData.map(priceData => new Date(priceData[0]).toLocaleDateString());
             const prices = pricesData.map(priceData => priceData[1]);
-
-             // Calculate price change for display
             const firstPrice = prices[0];
             const lastPrice = prices[prices.length - 1];
             const priceChange = ((lastPrice - firstPrice) / firstPrice) * 100;
              const priceChangeColor = priceChange >= 0 ? '#22c55e' : '#ef4444';
-
-             // Determine chart y-axis limits with padding
             const minPrice = Math.min(...prices);
             const maxPrice = Math.max(...prices);
              const padding = (maxPrice - minPrice) * 0.1;
 
-            // Create chart container HTML
             const chartContainer = document.createElement('div');
              chartContainer.innerHTML = `
                 <h2>${coinId.toUpperCase()} Price History</h2>
@@ -424,25 +376,21 @@ class MarketPage {
                 <canvas id="priceChart"></canvas>
             `;
 
-             // Replace modal loading with chart container
-            if (this.modalContent) {
+             if (this.modalContent) {
                 this.modalContent.innerHTML = '';
                 this.modalContent.appendChild(chartContainer);
             }
 
-             // Setup time filter buttons (re-add listeners after replacing innerHTML)
              chartContainer.querySelectorAll('.time-filters button').forEach(button => {
                 button.addEventListener('click', (event) => {
                     const target = event.target;
                     const days = parseInt(target.dataset.days);
-                     // Update chart with new time frame
                     if (this.currentSymbol) {
                         this.updateChart(this.currentSymbol, days);
                     }
                 });
             });
 
-            // Render the updated chart
             this.renderChart(labels, prices, coinId, minPrice - padding, maxPrice + padding);
 
         } catch (error) {
@@ -458,7 +406,6 @@ class MarketPage {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Destroy existing chart instance before creating a new one
         if (this.currentChart) {
             this.currentChart.destroy();
         }
@@ -516,23 +463,19 @@ class MarketPage {
             }
         };
 
-        // Create and store the new chart instance
         this.currentChart = new Chart(ctx, chartConfig);
     }
 
-     // Shows the main market loading indicator and clears the market list
     showMainLoading() {
         if (this.loadingIndicator) this.loadingIndicator.style.display = 'block';
         if (this.errorMessage) this.errorMessage.style.display = 'none';
-        if (this.marketList) this.marketList.innerHTML = ''; // Clear list while loading
+        if (this.marketList) this.marketList.innerHTML = '';
     }
 
-    // Hides the main market loading indicator
     hideMainLoading() {
         if (this.loadingIndicator) this.loadingIndicator.style.display = 'none';
     }
 
-     // Shows a loading spinner within the modal content area
     showModalLoading() {
         if (this.modalContent) {
             this.modalContent.innerHTML = `
@@ -544,23 +487,17 @@ class MarketPage {
         }
     }
 
-    // Hides the modal loading indicator (content is usually replaced)
     hideModalLoading() {
-        // The loading content is replaced by renderDetails or showErrorInModal,
-        // so explicit hiding might not be strictly necessary unless you have
-        // a persistent modal loading element outside of modalContent.
     }
 
-    // Displays an error message in the main market area and clears the list
     showError(message) {
         if (this.errorMessage) {
             this.errorMessage.textContent = message;
             this.errorMessage.style.display = 'block';
         }
-         if (this.marketList) this.marketList.innerHTML = ''; // Clear list on error
+         if (this.marketList) this.marketList.innerHTML = '';
     }
 
-    // Displays an error message within the modal content area
     showErrorInModal(message) {
         if (this.modalContent) {
             this.modalContent.innerHTML = `
@@ -572,30 +509,20 @@ class MarketPage {
     }
 
     async showDetails(coinId) {
-        this.showModalLoading(); // Show loading spinner in modal
-        if (this.graphModal) this.graphModal.style.display = 'block'; // Show the modal
+        this.showModalLoading();
+        if (this.graphModal) this.graphModal.style.display = 'block';
 
         try {
-            // Fetch coin details using coin ID
             const coinDetails = await cryptoService.getCryptoDetails(coinId);
             console.log('Coin details:', coinDetails);
-
-             // Render the coin details in the modal
             this.renderDetails(coinDetails.data);
-
-            // Note: We are not hiding the modal loading explicitly here
-            // because renderDetails replaces the modal content.
-
         } catch (error) {
             console.error('Error showing details:', error);
              this.showErrorInModal(`Failed to load coin details: ${error.message || error}`);
-             // Note: We are not hiding the modal loading explicitly here
-             // because showErrorInModal replaces the modal content.
         }
     }
 
     renderDetails(coinDetails) {
-        // Render the detailed coin information (excluding description as requested)
         if (this.modalContent) {
             this.modalContent.innerHTML = `
                 <h2>${coinDetails.name} (${coinDetails.symbol ? coinDetails.symbol.toUpperCase() : 'N/A'})</h2>
@@ -606,11 +533,9 @@ class MarketPage {
                 <button class="view-graph-btn">View Price Graph (30 Days)</button>
             `;
 
-            // Add event listener to the View Graph button
             const viewGraphBtn = this.modalContent.querySelector('.view-graph-btn');
             if (viewGraphBtn) {
                 viewGraphBtn.addEventListener('click', () => {
-                     // Use the coin ID from the current coin details
                     const coinId = coinDetails.id;
                     if (coinId) {
                         this.showGraph(coinId);
@@ -623,7 +548,6 @@ class MarketPage {
     closeGraphModal() {
         this.graphModal.style.display = 'none';
         this.modalContent.innerHTML = '';
-        // Destroy chart instance when modal is closed to prevent memory leaks
         if (this.currentChart) {
             this.currentChart.destroy();
             this.currentChart = null;
@@ -631,7 +555,6 @@ class MarketPage {
     }
 }
 
-// Initialize the market page when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     const marketPage = new MarketPage();
     marketPage.init();
