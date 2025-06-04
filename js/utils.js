@@ -1,7 +1,6 @@
 /**
- * Format a number as currency with the specified currency code
- * @param {number} amount - The amount to format
- * @param {string} currency - The currency code (default: 'USD')
+ * @param {number} amount
+ * @param {string} currency 
  * @returns {string} Formatted currency string
  */
 export function formatCurrency(amount, currency = 'USD') {
@@ -14,7 +13,6 @@ export function formatCurrency(amount, currency = 'USD') {
 }
 
 /**
- * Format a number with appropriate suffix (K, M, B)
  * @param {number} num - The number to format
  * @returns {string} Formatted number string
  */
